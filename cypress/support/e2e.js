@@ -1,1 +1,1 @@
-Cypress.on('uncaught:exception', () => false)
+import './commands'

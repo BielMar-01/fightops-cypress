@@ -1,0 +1,37 @@
+name: Cypress CI
+
+on:
+  push:
+    branches:
+      - teste-cypress
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: cypress-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar versão do Cypress
+        run: npx cypress verify
+
+      - name: Rodar testes E2E
+        run: npx cypress run
