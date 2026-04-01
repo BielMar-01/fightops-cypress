@@ -1,14 +1,20 @@
 {
   "name": "fightops-cypress-clean",
   "version": "1.0.0",
+  "description": "Automação E2E com Cypress para o FightOps",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "cypress",
+    "e2e",
+    "qa",
+    "automation"
+  ],
+  "author": "Gabriel Marques",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "cypress": "^13.17.0"
   }
