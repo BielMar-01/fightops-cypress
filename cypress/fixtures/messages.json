@@ -1,0 +1,7 @@
+{
+  "login": {
+    "invalidCredentials": "E-mail ou senha inválidos",
+    "requiredEmail": "O e-mail é obrigatório",
+    "requiredPassword": "A senha é obrigatória"
+  }
+}

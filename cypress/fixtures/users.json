@@ -1,0 +1,21 @@
+{
+  "ct": {
+    "email": "ct@fightops.com",
+    "password": "123456",
+    "role": "CT"
+  },
+  "professor": {
+    "email": "carlos@fightops.com",
+    "password": "123456",
+    "role": "Professor"
+  },
+  "aluno": {
+    "email": "lucas@fightops.com",
+    "password": "123456",
+    "role": "Aluno"
+  },
+  "invalidUser": {
+    "email": "usuario.invalido@fightops.com",
+    "password": "senhaerrada"
+  }
+}
