@@ -1,14 +1,9 @@
-describe('Autenticação - Login', () => {
+describe('🔐 Autenticação - Login FightOps', () => {
   let users
-  let messages
 
   before(() => {
     cy.fixture('users').then((data) => {
       users = data
-    })
-
-    cy.fixture('messages').then((data) => {
-      messages = data
     })
   })
 
@@ -16,40 +11,66 @@ describe('Autenticação - Login', () => {
     cy.visit('/')
   })
 
-  it('Dado que o usuário CT possui credenciais válidas, Quando realizar login, Então deve acessar o sistema com sucesso', () => {
-    cy.login(users.ct.email, users.ct.password)
+  // =========================
+  // ✅ CONTEXTO: LOGIN COM SUCESSO
+  // =========================
+  context('Quando o usuário possui credenciais válidas', () => {
 
-    cy.url({ timeout: 10000 }).should('not.include', '/login')
-    cy.get('body').should('be.visible')
+    const perfis = ['ct', 'professor', 'aluno']
+
+    perfis.forEach((perfil) => {
+      it(`Deve realizar login com sucesso e exibir a role correta (${perfil})`, () => {
+        const user = users[perfil]
+
+        cy.login(user.email, user.password)
+
+        // valida redirecionamento
+        cy.url({ timeout: 10000 }).should('not.include', '/login')
+
+        // valida dashboard
+        cy.contains('Dashboard').should('be.visible')
+
+        // 🔥 valida ROLE (RBAC)
+        cy.contains(user.role).should('be.visible')
+      })
+    })
   })
 
-  it('Dado que o usuário informa credenciais inválidas, Quando tentar realizar login, Então deve permanecer na tela de autenticação', () => {
-    cy.login(users.invalidUser.email, users.invalidUser.password)
+  // =========================
+  // ❌ CONTEXTO: LOGIN INVÁLIDO
+  // =========================
+  context('Quando o usuário informa credenciais inválidas', () => {
+    it('Não deve permitir login e deve permanecer na tela inicial', () => {
+      cy.login(users.invalidUser.email, users.invalidUser.password)
 
-    cy.url().should('include', '/')
-    cy.get('body').should('be.visible')
+      cy.url().should('include', '/')
 
-    // Descomente quando o sistema exibir a mensagem real
-    // cy.contains(messages.login.invalidCredentials).should('be.visible')
+      cy.contains('Dashboard').should('not.exist')
+    })
   })
 
-  it('Dado que o usuário não preenche o e-mail, Quando tentar realizar login, Então o sistema deve validar o campo obrigatório', () => {
-    cy.get('input[type="password"]').type(users.ct.password, { log: false })
-    cy.contains('button', /entrar|login|acessar/i).click()
+  // =========================
+  // ⚠️ CONTEXTO: VALIDAÇÃO DE CAMPOS
+  // =========================
+  context('Quando o usuário não preenche os campos obrigatórios', () => {
 
-    cy.get('input[type="email"]').should('be.visible')
+    it('Deve validar campo e-mail obrigatório', () => {
+      cy.get('input[type="password"]')
+        .type(users.ct.password, { log: false })
 
-    // Descomente quando a validação textual estiver confirmada
-    // cy.contains(messages.login.requiredEmail).should('be.visible')
-  })
+      cy.get('button').click()
 
-  it('Dado que o usuário não preenche a senha, Quando tentar realizar login, Então o sistema deve validar o campo obrigatório', () => {
-    cy.get('input[type="email"]').type(users.ct.email)
-    cy.contains('button', /entrar|login|acessar/i).click()
+      cy.get('input[type="email"]').should('be.visible')
+    })
 
-    cy.get('input[type="password"]').should('be.visible')
+    it('Deve validar campo senha obrigatório', () => {
+      cy.get('input[type="email"]')
+        .type(users.ct.email)
 
-    // Descomente quando a validação textual estiver confirmada
-    // cy.contains(messages.login.requiredPassword).should('be.visible')
+      cy.get('button').click()
+
+      cy.get('input[type="password"]').should('be.visible')
+    })
+
   })
 })
